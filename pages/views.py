@@ -1,6 +1,6 @@
 from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponseBadRequest
-from pages.models import Post
+from pages.models import Announcement
 from django.shortcuts import redirect
 
 
@@ -26,14 +26,14 @@ def page_not_found_view(request, exception):
 def server_error_view(request):
     return render(request, '500.html', status=500)
 
-def post_list(request):
+def announcement_list(request):
     # Model.objects.all()
-    posts = Post.objects.all().prefetch_related('comments')
+    posts = Announcement.objects.all().prefetch_related('comments') 
     context = {
         'posts': posts,
         'title': 'Posts',
     }
-    return render(request, 'post_list.html', context)
+    return render(request, 'announcement_list.html', context)
 
 def admin(request):
     return redirect('/admin/')
@@ -44,26 +44,25 @@ def post_create(request):
         body = request.POST.get('body')
         if not title or not body:
             return HttpResponseBadRequest("Title and body are required.")
-        Post.objects.create(title=title, body=body)
-        return redirect('post_list')
+        Announcement.objects.create(title=title, body=body)
+        return redirect('announcement_list')
     return render(request, 'post_form.html')
 
-def post_view(request, pk):
-    #post = get_object_or_404(Post, pk=pk)
-    post = Post.objects.get(pk=pk)
-    comments = Post.objects.prefetch_related('comments')
-    return render(request, 'post_view.html', {'post': post})
+def post_detail(request, pk):
+    post = Announcement.objects.get(pk=pk)
+    comments = Announcement.objects.prefetch_related('comments')
+    return render(request, 'post_detail.html', {'post': post})
 
 def post_update(request, pk):
-    post = get_object_or_404(Post, pk=pk)
+    post = get_object_or_404(Announcement, pk=pk)
     if request.method == 'POST':
         post.title = request.POST.get('title') or post.title
         post.body = request.POST.get('body') or post.body
         post.save()
-        return redirect('post_view', pk=pk)
+        return redirect('post_detail', pk=pk)
     return render(request, 'post_form.html', {'post': post})
 def post_delete(request, pk):
-    post = get_object_or_404(Post, pk=pk)
+    post = get_object_or_404(Announcement, pk=pk)
     if request.method == 'POST':
         post.delete()
         return redirect('post_list')

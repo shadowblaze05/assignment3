@@ -1,7 +1,7 @@
 from django.contrib import admin
-from pages.models import Post, Comment, Student, Course, Enrollment
+from pages.models import Announcement, Comment, Student, Course, Enrollment
 # Register your models here.
-admin.site.register(Post)
+admin.site.register(Announcement)
 admin.site.register(Comment)
 admin.site.register(Student)
 admin.site.register(Course)

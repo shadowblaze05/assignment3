@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+{% block title %}{{ post.title }}{% endblock %}
+{% block content %}
+<h1>
+  {{ post.title }}
+  <small>Posted on {{ post.created_at|timesince }} ago.</small>
+</h1>
+<span>
+  <a href="{% url 'post_update' post.pk %}">Edit</a> | 
+  <a href="{% url 'post_delete' post.pk %}">Delete</a>
+</span>
+
+<!-- Post Body with Read More -->
+<div id="postBody" style="white-space: pre-wrap; word-wrap: break-word; max-width: 800px;">
+  <span id="shortBody">
+    {{ post.body|truncatewords:50 }}
+  </span>
+  <span id="fullBody" style="display: none;">
+    {{ post.body }}
+  </span>
+</div>
+
+<button id="toggleBodyBtn" style="margin-top: 1rem;">Read More</button>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+    const btn = document.getElementById("toggleBodyBtn");
+    const shortBody = document.getElementById("shortBody");
+    const fullBody = document.getElementById("fullBody");
+
+    btn.addEventListener("click", function() {
+      if (fullBody.style.display === "none") {
+        shortBody.style.display = "none";
+        fullBody.style.display = "inline";
+        btn.textContent = "Read Less";
+      } else {
+        shortBody.style.display = "inline";
+        fullBody.style.display = "none";
+        btn.textContent = "Read More";
+      }
+    });
+  });
+</script>
+{% endblock %}
